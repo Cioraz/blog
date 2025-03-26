@@ -2,10 +2,7 @@
 <html lang="en" dir="{{ or site.Language.LanguageDirection `ltr` }}">
 <head>
   {{ partial "head.html" . }}
-  <script
-  defer
-  src="https://vitals.vercel-insights.com/script.js"
-></script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 {{ $theme := "dark" }}
 {{- with .Site.Params.theme }}
