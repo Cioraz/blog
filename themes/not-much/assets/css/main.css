@@ -106,14 +106,15 @@ kbd {
   font-weight: bold;
 }
 
+/* Increase the size of the headings in posts */
 .post article h1,
 .post article h2,
 .post article h3,
 .post article h4,
 .post article h5,
 .post article h6 {
-  font-size: 1.2rem;
-  margin: 24px 0 10px 0;
+  font-size: 1.4rem; /* Slightly larger size for headings */
+  margin: 24px 0 12px 0; /* Adjust margin for better spacing */
   font-weight: bold;
 }
 
@@ -122,29 +123,66 @@ kbd {
   color: var(--secondary);
 }
 
-.post article h2::before {
-  content: "## ";
-  color: var(--secondary);
-}
-
-.post article h3::before {
-  content: "### ";
-  color: var(--secondary);
-}
-
-.post article h4::before {
-  content: "#### ";
-  color: var(--secondary);
-}
-
-.post article h5::before {
-  content: "###### ";
-  color: var(--secondary);
-}
-
+.post article h2::before,
+.post article h3::before,
+.post article h4::before,
+.post article h5::before,
 .post article h6::before {
-  content: "###### ";
-  color: var(--secondary);
+  content: ""; /* Remove the symbols before the headings */
+}
+
+.post article h2,
+.post article h3,
+.post article h4 {
+    border-bottom: 2px solid var(--primary); /* Add a line below the heading */
+    padding-bottom: 5px; /* Add spacing between the heading and the line */
+    font-size: 1.5rem; /* Increase the size of h2 */
+    margin-bottom: 15px; /* Add spacing below the heading */
+}
+
+.post article h3 {
+    font-size: 1.3rem; /* Increase the size of h3 */
+}
+
+.post article h4 {
+    font-size: 1.2rem; /* Increase the size of h4 */
+}
+
+/* Increase the size of the date */
+.post .post-meta {
+  font-size: 1.2rem; /* Slightly larger size for the date */
+  color: var(--secondary); /* Ensure it matches the theme */
+  margin-bottom: 10px; /* Add spacing below the date */
+}
+
+/* Increase the size of the summary */
+.post .summary {
+  font-size: 1.3rem; /* Slightly larger size for the summary */
+  line-height: 1.6; /* Adjust line height for better readability */
+  color: var(--font-color); /* Ensure it matches the theme */
+  margin-bottom: 12px; /* Add spacing below the summary */
+}
+
+/* Increase the font size of post titles in the posts list */
+.posts .post-title {
+  font-size: 1.6rem; /* Make the post titles larger */
+  font-weight: bold; /* Ensure they stand out */
+  margin-bottom: 10px; /* Add spacing below the title */
+}
+
+/* Increase the font size of post summaries in the posts list */
+.posts .post-summary {
+  font-size: 1.3rem; /* Slightly larger size for summaries */
+  line-height: 1.6; /* Improve readability */
+  color: var(--font-color); /* Ensure it matches the theme */
+  margin-bottom: 12px; /* Add spacing below the summary */
+}
+
+/* Increase the font size of post metadata (like dates) */
+.posts .post-meta {
+  font-size: 1.2rem; /* Slightly larger size for metadata */
+  color: var(--secondary); /* Use a secondary color for distinction */
+  margin-bottom: 10px; /* Add spacing below the metadata */
 }
 
 .breadcrumb-item+.breadcrumb-item::before {

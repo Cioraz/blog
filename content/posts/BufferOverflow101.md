@@ -28,6 +28,23 @@ toc: true
   font-size: 0.85em; /* Reduce the font size of links */
   line-height: 1.4; /* Adjust line height for better readability */
 }
+
+/* Increase the font size of post summaries in the posts list */
+.posts .post-summary,
+.post .summary {
+  font-size: 1.4rem; /* Slightly larger size for summaries */
+  line-height: 1.7; /* Improve readability */
+  color: var(--font-color); /* Ensure it matches the theme */
+  margin-bottom: 14px; /* Add spacing below the summary */
+}
+
+/* Increase the font size of post metadata (like dates) */
+.posts .post-meta,
+.post .post-meta {
+  font-size: 1.3rem; /* Slightly larger size for metadata */
+  color: var(--secondary); /* Use a secondary color for distinction */
+  margin-bottom: 12px; /* Add spacing below the metadata */
+}
 </style>
 
 ## Background
