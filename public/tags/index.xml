@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Intel_Decrypted</title>
+    <link>http://localhost:1313/tags/</link>
+    <description>Recent content in Tags on Intel_Decrypted</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 26 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Buffer Overflow</title>
+      <link>http://localhost:1313/tags/buffer-overflow/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/buffer-overflow/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Exploit Development</title>
+      <link>http://localhost:1313/tags/exploit-development/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/exploit-development/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Security</title>
+      <link>http://localhost:1313/tags/security/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/security/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Vulnerability</title>
+      <link>http://localhost:1313/tags/vulnerability/</link>
+      <pubDate>Wed, 26 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/vulnerability/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

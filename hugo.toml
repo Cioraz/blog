@@ -1,0 +1,42 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Intel_Decrypted'
+theme = "not-much"
+
+[markup]
+[markup.highlight]
+style = 'dracula'
+[markup.goldmark]
+[markup.goldmark.renderer]
+unsafe = true
+
+
+# Controls the navigation
+[[menu.main]]
+identifier = "about"
+name = "about"
+title = "About"
+url = "/"
+weight = 1
+
+[[menu.main]]
+identifier = "posts"
+name = "posts"
+title = "Posts"
+url = "/posts"
+weight = 2
+
+[[menu.main]]
+identifier = "github"
+name = "github"
+title = "GitHub"
+url = "https://github.com/Cioraz"
+weight = 3
+
+[params]
+theme = "dark"
+palette = "catpuccin"
+
+copyright = "© {year}"
+showThemeNotice = true  # or false
+showPostsSummary = true
