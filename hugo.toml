@@ -4,12 +4,17 @@ title = 'Intel_Decrypted'
 theme = "not-much"
 
 [markup]
-[markup.highlight]
-style = 'dracula'
-[markup.goldmark]
-[markup.goldmark.renderer]
-unsafe = true
+    [markup.highlight]
+        style = 'dracula'
+    [markup.goldmark]
+        [markup.goldmark.renderer]
+            unsafe = true
 
+[params]
+theme = "dark"
+palette = "catpuccin"
+showThemeNotice = true 
+showPostsSummary = true
 
 # Controls the navigation
 [[menu.main]]
@@ -33,10 +38,3 @@ title = "GitHub"
 url = "https://github.com/Cioraz"
 weight = 3
 
-[params]
-theme = "dark"
-palette = "catpuccin"
-
-copyright = "© {year}"
-showThemeNotice = true  # or false
-showPostsSummary = true

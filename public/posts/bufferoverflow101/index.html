@@ -149,6 +149,9 @@
 <li><u><em><strong>no-pie</strong></em>:</u> Disabling PIE (Position Independent Executable) means the binary loads at a fixed address, which simplifies things for certain testing scenarios (like predictable addresses for shellcode).</li>
 <li><u><em><strong>m32</strong></em></u>: This flag compiles your code as a 32-bit binary.</li>
 </ul>
+<p>Also make sure to disable ASLR using the below command,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#bd93f9">0</span> | sudo tee /proc/sys/kernel/randomize_va_space
+</span></span></code></pre></div><p>This makes sure that the addresses are not randomized and are predictable.</p>
 <h2 id="reconnaissance">Reconnaissance</h2>
 <p><img src="/images/Screenshot_2025-03-26_10-47-14.png" alt="Checksec Image"></p>
 <ul>

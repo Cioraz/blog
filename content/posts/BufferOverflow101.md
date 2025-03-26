@@ -61,6 +61,14 @@ gcc -fno-stack-protector -z execstack -no-pie -m32 -mpreferred-stack-boundary=2 
 - <u>_**no-pie**_:</u> Disabling PIE (Position Independent Executable) means the binary loads at a fixed address, which simplifies things for certain testing scenarios (like predictable addresses for shellcode).
 - <u>_**m32**_</u>: This flag compiles your code as a 32-bit binary.
 
+Also make sure to disable ASLR using the below command,
+
+```bash
+echo 0 | sudo tee /proc/sys/kernel/randomize_va_space
+```
+
+This makes sure that the addresses are not randomized and are predictable.
+
 ## Reconnaissance
 ![Checksec Image](/images/Screenshot_2025-03-26_10-47-14.png)
 

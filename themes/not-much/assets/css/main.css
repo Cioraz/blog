@@ -117,22 +117,24 @@ kbd {
   font-weight: bold;
 }
 
-.post article h2,
-.post article h3,
-.post article h4 {
-  color: var(--primary); /* Use the theme's primary color */
-  font-weight: bold; /* Keep them bold */
-  font-size: 1.3rem; /* Slightly increase the font size */
-  border-bottom: 2px solid var(--primary-variant); /* Use a muted variant of the primary color */
-  padding-bottom: 4px; /* Add some spacing below the text */
-  opacity: 0.9; /* Slightly reduce opacity for a softer look */
+.post article h1::before {
+  content: "# ";
+  color: var(--secondary);
 }
 
-.post article h1::before,
-.post article h2::before,
-.post article h3::before,
+.post article h2::before {
+  content: "## ";
+  color: var(--secondary);
+}
+
+.post article h3::before {
+  content: "### ";
+  color: var(--secondary);
+}
+
 .post article h4::before {
-  content: ""; /* Remove the # symbols */
+  content: "#### ";
+  color: var(--secondary);
 }
 
 .post article h5::before {
