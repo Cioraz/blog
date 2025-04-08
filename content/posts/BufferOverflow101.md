@@ -1,7 +1,7 @@
 ---
 title: "Buffer Overflow 101"
 description: Here is a demo of all shortcodes available in Hugo.
-date: 2025-03-26
+date: 2025-04-06
 tags: ["buffer overflow", "exploit development", "security", "vulnerability"]
 categories: ["Cybersecurity", "Exploitation"]
 summary: This post covers the basics of creating and exploiting a buffer overflow vulnerability.
@@ -48,8 +48,8 @@ toc: true
 </style>
 
 ## Background
-- A bit of background on buffer overflows: Buffer overflows occur when a program attempts to write more data into a buffer than it has allocated for it. This can lead to overwriting adjacent memory locations, potentially resulting in code execution or other security vulnerabilities.
-- Recently, in one of my lectures, I was tasked with simulating a buffer overflow vulnerability, and I would like to share my approach to simulating this vulnerability.
+- A bit of background on buffer overflows: Buffer overflows occur when a program writes more data to a buffer than it can hold. This can overwrite nearby memory, potentially allowing attackers to execute arbitrary code or cause other security issues.
+- Recently, during one of my lectures, I was tasked with demonstrating a buffer overflow vulnerability. I’d like to share my approach to simulating this exploit.
 
 ## C Program used for the Simulation
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-- The above binary is vulnerable because of the use of `strcpy`, which fails to check for buffer overflow. Since `strcpy` copies data without ensuring the destination buffer has enough space, an attacker can exploit this to overwrite adjacent memory. PS: for such applications always use `strncpy`.
+- This binary is vulnerable due to the use of `strcpy`, which does not check if the destination buffer is large enough. Consequently, an attacker could overwrite adjacent memory. P.S.: For safer code, consider using `strncpy` or other bounds-checked functions.
 
 
 ## Compilation
@@ -74,9 +74,9 @@ gcc -fno-stack-protector -z execstack -no-pie -m32 -mpreferred-stack-boundary=2 
 ```
 - <u>_**mpreferred-stack-boundary**_</u>: This is particularly relevant for older or specific ABI requirements, as many modern systems use a higher boundary. Basically in my case, I had to use this to ensure that the stack is aligned to 4 bytes as im compiling to a 32 bit binary.
 - <u>_**fno-stack-protector**_:</u> Disables stack protection also known as canaries allowing buffer overflow to occur.
-- <u>_**execstack**_:</u> This flag marks the stack as executable, allowing you to place and run code from the stack.
-- <u>_**no-pie**_:</u> Disabling PIE (Position Independent Executable) means the binary loads at a fixed address, which simplifies things for certain testing scenarios (like predictable addresses for shellcode).
-- <u>_**m32**_</u>: This flag compiles your code as a 32-bit binary.
+- <u>_**execstack**_:</u> Marks the stack as executable, which enables code placed on the stack to run.
+- <u>_**no-pie**_:</u> Disables Position Independent Executable (PIE), ensuring the binary loads at a fixed address—useful for predictable shellcode placement.
+- <u>_**m32**_</u>: Compiles the code as a 32-bit binary.
 
 Also make sure to disable ASLR using the below command,
 
@@ -89,8 +89,8 @@ This makes sure that the addresses are not randomized and are predictable.
 ## Reconnaissance
 ![Checksec Image](/images/Screenshot_2025-03-26_10-47-14.png)
 
-- <u>_**PIE**_</u>: No PIE, meaning that the binary is not built as a Position Independent Executable, which results in a fixed memory layout each time the program runs.
-- <u>_**Stack**_</u>: No Canary found meaning we can easily perform buffer overflow as there are no protections also it is executable allowing for shellcode to be executed.
+- <u>_**PIE**_</u>: The binary is not built as a Position Independent Executable, which means its memory layout remains fixed on each run.
+- <u>_**Stack**_</u>: No stack canary is present, making it easier to exploit the buffer overflow. Additionally, the stack is executable, allowing shellcode execution.
 
 ## Performing the attack
 
@@ -107,7 +107,7 @@ This makes sure that the addresses are not randomized and are predictable.
 
     Command: `r $(python2 -c 'print "A"*256')`
 
-    In the above image upon running this we can fill the buffer which can accommodate `256` bytes of characters using python2. By doing so we can find out whats the starting address of the buffer which will be used to craft the exploit.
+    In the above image upon running this we can fill the buffer which can accommodate `256` bytes of characters using python2. This helps in crafting the exploit by knowing where the buffer resides in memory.
 
     Running the below command gives us a better clarity,
 
@@ -119,7 +119,7 @@ This makes sure that the addresses are not randomized and are predictable.
 
 3. <u>**Offset Calculation**</u>
 
-    Now lets find till where we must give input so that we can overwrite the EIP (current instruction register) . From the below we see that we overwrote the EIP with `‘qaac’`.
+    Now let’s find till where we must give input so that we can overwrite the EIP (current instruction register) . From the below we see that we overwrote the EIP with `‘qaac’`.
 
     Command: `cyclic 300`
 
@@ -180,5 +180,5 @@ This makes sure that the addresses are not randomized and are predictable.
 
     ![Attacked](/images/Screenshot_2025-03-21_17-25-56.png)
 
-    BOOM! We have successfully exploited the buffer overflow vulnerability and spawned a shell.
+    And there you have it – the successful exploitation of the buffer overflow vulnerability, demonstrated by spawning a shell.
 
